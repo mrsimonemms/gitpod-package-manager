@@ -9,6 +9,8 @@ tasks:
       # Activate hooks
       husky install
 
+      sudo ln -s "${GITPOD_REPO_ROOT}/gpm.sh" /usr/local/bin/gpm
+
 vscode:
   extensions:
     - donjayamanne.git-extension-pack
