@@ -107,6 +107,32 @@ Flags:
 EOF
 )
   _help "${help}" "${@}"
+
+  if [ -z "${*}" ]; then
+    echo "No packages specified"
+    exit 1
+  fi
+
+  for pkg in "${@}"; do
+    # @todo(sje): allow pkg@version notation - for now, always treat as "latest"
+    pkg_version="latest"
+
+    pkg_path="/tmp/gpm_${pkg}.sh"
+    sudo rm -f "${pkg_path}"
+
+    if [ -f "./packages/${pkg}.sh" ]; then
+      cp "./packages/${pkg}.sh" "${pkg_path}"
+    else
+      sudo curl -fsL "${GPM_REPO_URL}/packages/${pkg}.sh" -o "${pkg_path}" || (echo "Unknown package: ${pkg}" && exit 1)
+    fi
+
+    # shellcheck source=/dev/null
+    source "${pkg_path}"
+
+    echo "Installing package: ${pkg}@${pkg_version}"
+    gpm_${pkg}_install "${pkg_version}" > >(trap "" INT TERM; sed 's/^/[gpm]: /')
+    echo "Package installed: ${pkg}@${pkg_version}"
+  done
 }
 
 #######################
