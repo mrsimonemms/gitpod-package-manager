@@ -54,7 +54,7 @@ jobs:
             -v "${GITHUB_WORKSPACE}/packages:/workspace/gpm/packages" \
             gitpod/workspace-base \
             bash -c \
-              "source \"./packages/${{ matrix.package }}.sh\" && gpm_${{ matrix.package }}_install"
+              "source \"./packages/${{ matrix.package }}.sh\" && gpm_${{ matrix.package }}_install latest"
 
   docker:
     runs-on: ubuntu-latest
