@@ -37,6 +37,40 @@ tasks:
       gpm install kubectl helm my-custom-package
 ```
 
+## Using with Prebuilds
+
+> Gitpod supports [prebuilding](https://www.gitpod.io/docs/configure/projects/prebuilds) of
+> workspace images to reduce start-up times
+
+Prebuilds are one of the best features of Gitpod, saving you time on repetitive and lengthy
+tasks. Gitpod Package Manager installation tasks are usually fairly speedy, but sometimes you
+will need access to the packages in your prebuilds. As Gitpod Prebuilds only saves the contents
+of the `/workspace` directory<sup>[1](https://www.gitpod.io/docs/configure/projects/prebuilds#workspace-directory-only)</sup>,
+you will need to use a custom workspace Dockerfile.
+
+First, create `.gitpod.Dockerfile`:
+
+```Dockerfile
+FROM gitpod/workspace-full
+COPY --from=ghcr.io/mrsimonemms/gitpod-package-manager /app/gpm /usr/local/bin/gpm
+RUN gpm install kubectl helm
+```
+
+Finally, set your `.gitpod.yml` to use the custom workspace Dockerfile:
+
+```yaml
+image:
+  file: .gitpod.Dockerfile
+```
+
+Gitpod Package Manager now installs the dependencies to the custom Docker image and your
+prebuilt workspace images.
+
+### Docker Tags
+
+For the most part, you should use `latest`. If you want to maintain a specific version of
+Gitpod Package Manager, the Docker images are tagged with the build's datetime.
+
 ## Contributing
 
 PRs welcome.
