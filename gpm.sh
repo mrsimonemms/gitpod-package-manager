@@ -113,9 +113,10 @@ EOF
     exit 1
   fi
 
-  for pkg in "${@}"; do
-    # @todo(sje): allow pkg@version notation - for now, always treat as "latest"
-    pkg_version="latest"
+  for item in "${@}"; do
+    IFS='@' read -r -a array <<< "${item}"
+    pkg="${array[0]}"
+    pkg_version="${array[1]:-latest}"
 
     pkg_path="/tmp/gpm_${pkg}.sh"
     sudo rm -f "${pkg_path}"
@@ -130,7 +131,7 @@ EOF
     source "${pkg_path}"
 
     echo "Installing package: ${pkg}@${pkg_version}"
-    gpm_${pkg}_install "${pkg_version}" > >(trap "" INT TERM; sed 's/^/[gpm]: /')
+    "gpm_${pkg}_install" "${pkg_version}" > >(trap "" INT TERM; sed 's/^/[gpm]: /')
     echo "Package installed: ${pkg}@${pkg_version}"
   done
 }
