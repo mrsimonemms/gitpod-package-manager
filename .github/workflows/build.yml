@@ -1,0 +1,95 @@
+name: Build
+on:
+  - push
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          ignore_paths: .husky
+
+  list_packages:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.list.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: List packages
+        id: list
+        run: |
+          touch /tmp/output.yaml
+          for pkg in $(ls packages/*.sh); do
+            no_dir="${pkg/packages\//}"
+            no_ext="${no_dir/\.sh/}"
+            echo "- ${no_ext}" >> /tmp/output.yaml
+          done
+
+          echo "matrix={\"package\":$(cat /tmp/output.yaml | yq -o json -I 0)}" >> "$GITHUB_OUTPUT"
+
+  test_packages:
+    runs-on: ubuntu-latest
+    needs:
+      - list_packages
+    strategy:
+      matrix: ${{ fromJSON(needs.list_packages.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "${{ matrix.package }}: Test installation"
+        run: |
+          docker run \
+            --rm \
+            --workdir=/workspace/gpm \
+            -v "${GITHUB_WORKSPACE}/packages:/workspace/gpm/packages" \
+            gitpod/workspace-base \
+            bash -c \
+              "source \"./packages/${{ matrix.package }}.sh\" && gpm_${{ matrix.package }}_install"
+
+  docker:
+    runs-on: ubuntu-latest
+    needs:
+      - shellcheck
+      - test_packages
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Docker tag
+        id: docker
+        run: |
+          IMG_NAME="ghcr.io/${GITHUB_REPOSITORY,,}"
+          echo "tags=${IMG_NAME}:latest,${IMG_NAME}:$(date -u +%F-%H-%M-%S)" >> "$GITHUB_OUTPUT"
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64
+          push: ${{ steps.branch-name.outputs.is_default }}
+          tags: ${{ steps.docker.outputs.tags }}
