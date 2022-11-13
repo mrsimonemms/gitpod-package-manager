@@ -39,6 +39,15 @@ tasks:
       gpm install kubectl helm my-custom-package
 ```
 
+By default, it will install the latest version of the binary. To install the latest
+version of the binary, you should append `@<version>`. For example:
+
+```shell
+gpm install kubectl@1.25.3 helm@3.10.0 my-custom-package@1.2.3
+```
+
+**NB** This does not (yet) support semantic versioning ranges.
+
 ## Using with Prebuilds
 
 > Gitpod supports [prebuilding](https://www.gitpod.io/docs/configure/projects/prebuilds) of
@@ -86,7 +95,7 @@ All functions should follow these standards:
 
 - Open-source projects only - you can maintain your own proprietary packages in a fork
 - It must expose a function called `gpm_<pkg>_install`
-- It must install the latest version of the binary (a future iteration will allow specific versions to be installed)
+- It must install the latest version of the binary and, if possible, specific versions from the project's history
 - The filename must be `<pkg>.sh`
 - It should install only one binary
 - The binary should be executed with a `--version` command or similar to check that it's installed correctly
@@ -100,6 +109,13 @@ set -euo pipefail
 
 gpm_<pkg>_install() {
   echo "Install <pkg>"
+  version="${1}
+
+  if [ "${version}" = "latest" ]; then
+    # Install latest
+  else
+    # Install specific version
+  fi
 }
 ```
 
