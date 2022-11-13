@@ -2,6 +2,8 @@
 
 A package manager for Gitpod workspaces
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/MrSimonEmms/gitpod-package-manager)
+
 ## Why?
 
 I was getting fed up having to create `.gitpod.yml` or `.gitpod.Dockerfile` files with
@@ -85,9 +87,10 @@ All functions should follow these standards:
 - Open-source projects only - you can maintain your own proprietary packages in a fork
 - It must expose a function called `gpm_<pkg>_install`
 - It must install the latest version of the binary (a future iteration will allow specific versions to be installed)
-- Filename should be `<pkg>.sh`
+- The filename must be `<pkg>.sh`
 - It should install only one binary
 - The binary should be executed with a `--version` command or similar to check that it's installed correctly
+- It should not run any other commands with the binary
 - Ensure your script does not make any changes to the cloned workspace
 
 ```shell
@@ -99,3 +102,25 @@ gpm_<pkg>_install() {
   echo "Install <pkg>"
 }
 ```
+
+## FAQs
+
+### Could I not just use `<insert other tech>`?
+
+Yeah, probably.
+
+This is _ONE_ way of doing it, not the _ONLY_ way of doing it. If you've got something that
+works for you, great stuff. This is what works for me and I've open-sourced it in the hope
+that it will be useful to others.
+
+### What's your relationship to Gitpod?
+
+I work there. And I use it.
+
+### You're missing `<this>` package - can you add it?
+
+Yes, PRs are welcome. Please see the [contributing](#contributing) section for how to build
+your own package.
+
+This is build with forking in mind. By defining the environment variables, you can change
+the installation source to your own repo.
