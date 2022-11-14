@@ -109,7 +109,7 @@ set -euo pipefail
 
 gpm_<pkg>_install() {
   echo "Install <pkg>"
-  version="${1}
+  version="${1}"
 
   if [ "${version}" = "latest" ]; then
     # Install latest
@@ -138,5 +138,5 @@ I work there. And I use it.
 Yes, PRs are welcome. Please see the [contributing](#contributing) section for how to build
 your own package.
 
-This is build with forking in mind. By defining the environment variables, you can change
+This is built with forking in mind. By defining the environment variables, you can change
 the installation source to your own repo.
