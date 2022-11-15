@@ -134,6 +134,9 @@ EOF
     "gpm_${pkg}_install" "${pkg_version}" > >(trap "" INT TERM; sed 's/^/[gpm]: /')
     echo "Package installed: ${pkg}@${pkg_version}"
   done
+
+  echo "Reloading shell to enable tab completion"
+  exec $SHELL -l
 }
 
 #######################

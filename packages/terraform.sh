@@ -15,4 +15,5 @@ gpm_terraform_install() {
   sudo apt update
   sudo apt install -y terraform
   terraform version
+  terraform -install-autocomplete
 }

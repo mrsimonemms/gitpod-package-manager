@@ -13,4 +13,5 @@ gpm_yq_install() {
   sudo wget "${url}" -O /usr/bin/yq
   sudo chmod +x /usr/bin/yq
   yq --version
+  yq shell-completion bash | sudo tee -a /etc/bash_completion.d/yq > /dev/null
 }
