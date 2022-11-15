@@ -24,5 +24,5 @@ gpm_faas-cli_install() {
     sudo ln -s "${targetFile}" "${aliasTargetFile}"
   fi
 
-  faas-cli version
+  faas-cli completion --shell bash | sudo tee -a /etc/bash_completion.d/faas-cli > /dev/null
 }
