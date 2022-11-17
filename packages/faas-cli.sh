@@ -24,5 +24,7 @@ gpm_faas-cli_install() {
     sudo ln -s "${targetFile}" "${aliasTargetFile}"
   fi
 
+  # Remove the faas command - this annoys me
+  sudo rm -f "$(which faas)"
   faas-cli completion --shell bash | sudo tee -a /etc/bash_completion.d/faas-cli > /dev/null
 }
