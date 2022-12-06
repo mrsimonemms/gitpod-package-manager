@@ -53,7 +53,7 @@ jobs:
             --rm \
             --workdir=/workspace/gpm \
             -v "${GITHUB_WORKSPACE}/packages:/workspace/gpm/packages" \
-            gitpod/workspace-base \
+            gitpod/workspace-full \
             bash -c \
               "source \"./packages/${{ matrix.package }}.sh\" && gpm_${{ matrix.package }}_install latest"
 
