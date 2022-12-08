@@ -1,6 +1,7 @@
 tasks:
   - command: |
-      sudo ln -s "${GITPOD_REPO_ROOT}/gpm.sh" /usr/local/bin/gpm
+      mkdir -p /workspace/bin
+      sudo ln -s "${GITPOD_REPO_ROOT}/gpm.sh" /workspace/bin/gpm
 
       gpm install pre-commit
 

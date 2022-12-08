@@ -42,7 +42,7 @@ else
 fi
 
 GPM_REPO_URL="${GPM_REPO_URL:-https://raw.githubusercontent.com/MrSimonEmms/gitpod-package-manager/main}"
-TARGET_INSTALL_PATH="/usr/local/bin"
+TARGET_INSTALL_PATH="/workspace/bin"
 
 #########################
 # ▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜ #
@@ -82,8 +82,14 @@ EOF
 )
   _help "${help}" "${@}"
 
-  sudo curl -sfL "${GPM_REPO_URL}/gpm.sh" -o "${TARGET_INSTALL_PATH}/gpm"
-  sudo chmod +x "${TARGET_INSTALL_PATH}/gpm"
+  mkdir -p "${TARGET_INSTALL_PATH}"
+  export PATH="${PATH}:${TARGET_INSTALL_PATH}"
+
+  BASH_PATH="export PATH=\"\${PATH}:${TARGET_INSTALL_PATH}\""
+  grep "${BASH_PATH}" "${HOME}/.bashrc" || echo "${BASH_PATH}" >> "${HOME}/.bashrc"
+
+  curl -sfL "${GPM_REPO_URL}/gpm.sh" -o "${TARGET_INSTALL_PATH}/gpm"
+  chmod +x "${TARGET_INSTALL_PATH}/gpm"
 
   cat << EOF
 Gitpod Package Manager installed to ${TARGET_INSTALL_PATH}/gpm
@@ -119,12 +125,12 @@ EOF
     pkg_version="${array[1]:-latest}"
 
     pkg_path="/tmp/gpm_${pkg}.sh"
-    sudo rm -f "${pkg_path}"
+    rm -f "${pkg_path}"
 
     if [ -f "./packages/${pkg}.sh" ]; then
       cp "./packages/${pkg}.sh" "${pkg_path}"
     else
-      sudo curl -fsL "${GPM_REPO_URL}/packages/${pkg}.sh" -o "${pkg_path}" || (echo "Unknown package: ${pkg}" && exit 1)
+      curl -fsL "${GPM_REPO_URL}/packages/${pkg}.sh" -o "${pkg_path}" || (echo "Unknown package: ${pkg}" && exit 1)
     fi
 
     # shellcheck source=/dev/null
