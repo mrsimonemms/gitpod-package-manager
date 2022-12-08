@@ -4,6 +4,23 @@ A package manager for Gitpod workspaces
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/MrSimonEmms/gitpod-package-manager)
 
+<!-- toc -->
+
+* [Why?](#why)
+* [Getting started](#getting-started)
+* [Using with Prebuilds](#using-with-prebuilds)
+  * [Docker Tags](#docker-tags)
+* [Contributing](#contributing)
+  * [Function template](#function-template)
+* [FAQs](#faqs)
+  * [Could I not just use ``?](#could-i-not-just-use-)
+  * [What's your relationship to Gitpod?](#whats-your-relationship-to-gitpod)
+  * [You're missing `` package - can you add it?](#youre-missing--package---can-you-add-it)
+
+<!-- Regenerate with "pre-commit run -a markdown-toc" -->
+
+<!-- tocstop -->
+
 ## Why?
 
 I was getting fed up having to create `.gitpod.yml` or `.gitpod.Dockerfile` files with
